@@ -1,0 +1,1048 @@
+/* ================================================================
+   NEXTER AUTH — style.css   (Mobile-First, Smooth Animations)
+   Shared stylesheet for login.html and register.html
+
+   APPROACH: Mobile-first means we write base styles for the
+   smallest screens, then add @media (min-width: ...) rules to
+   enhance the layout for larger screens. This gives phones the
+   fastest load time and cleanest experience.
+
+   TABLE OF CONTENTS
+   ─────────────────────────────────────────────────────────────
+   1.  CSS Variables & Tokens
+   2.  Reset & Base
+   3.  Accessibility
+   4.  ★ All Keyframe Animations  (declared early so everything can use them)
+   5.  Page Wrapper               — stacked column on mobile
+   6.  Left Panel                 — compact banner on mobile
+   7.  Left Panel — Register variant
+   8.  Left Panel Content
+   9.  Right Panel
+   10. Dot Grid
+   11. Auth Card
+   12. Form Fields
+   13. Select Dropdown
+   14. Eye Toggle Button
+   15. Primary Button
+   16. Switch Auth
+   17. Status Box
+   18. Success Modal
+   19. ── Breakpoint: Tablet (≥ 600px)
+   20. ── Breakpoint: Desktop (≥ 960px)
+   21. ── Breakpoint: Large Desktop (≥ 1280px)
+   22. Touch-device overrides
+   23. Reduced-motion override
+================================================================ */
+
+
+/* ================================================================
+   1. CSS VARIABLES & TOKENS
+   Edit these to restyle the whole site in one place.
+================================================================ */
+:root {
+  /* ── Gradient colours (left panel & button) ── */
+  --g-from:       #1d4ed8;        /* deep blue  */
+  --g-mid:        #06b6d4;        /* cyan       */
+  --g-to:         #10b981;        /* emerald    */
+
+  /* ── Accent ── */
+  --accent:       #10b981;
+  --accent-dk:    #059669;
+
+  /* ── Surface colours ── */
+  --page-bg:      #f0f5fb;
+  --right-bg:     #f8fafd;
+  --card-bg:      #ffffff;
+  --input-bg:     #f1f6fb;
+  --input-border: #dde5ef;
+  --input-focus:  #2563eb;
+
+  /* ── Text ── */
+  --text-dark:    #0d1b2e;
+  --text-mid:     #4a5e72;
+  --text-muted:   #8fa3b8;
+  --text-white:   #ffffff;
+
+  /* ── Typography ── */
+  --font-body:    'DM Sans', sans-serif;
+  --font-display: 'Fraunces', serif;
+
+  /* ── Border radii ── */
+  --r-xs:  6px;
+  --r-sm:  10px;
+  --r-md:  14px;
+  --r-lg:  20px;
+  --r-xl:  28px;
+  --r-2xl: 36px;
+
+  /* ── Elevation (shadows) ── */
+  --shadow-card:  0 8px 32px rgba(13,27,46,0.10), 0 2px 10px rgba(13,27,46,0.06);
+  --shadow-card-hover: 0 24px 64px rgba(13,27,46,0.14), 0 4px 18px rgba(13,27,46,0.08);
+  --shadow-btn:   0 6px 22px rgba(37,99,235,0.30);
+  --shadow-btn-hover: 0 14px 36px rgba(37,99,235,0.40);
+  --focus-ring:   0 0 0 3.5px rgba(37,99,235,0.22);
+
+  /* ── Animation easing ── */
+  --spring:    cubic-bezier(0.34, 1.56, 0.64, 1);   /* bouncy  */
+  --smooth:    cubic-bezier(0.22, 1.00, 0.36, 1);   /* smooth  */
+  --ease-io:   cubic-bezier(0.40, 0.00, 0.20, 1);   /* in-out  */
+
+  /* ── Duration tokens ── */
+  --dur-xs:   120ms;
+  --dur-sm:   200ms;
+  --dur-md:   320ms;
+  --dur-lg:   480ms;
+  --dur-xl:   600ms;
+}
+
+
+/* ================================================================
+   2. RESET & BASE
+================================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent; /* removes grey flash on iOS tap */
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--page-bg);
+  color: var(--text-dark);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%; /* stop iOS from zooming text on rotation */
+}
+
+img, svg    { display: block; max-width: 100%; }
+a           { text-decoration: none; color: inherit; }
+button      { font-family: var(--font-body); cursor: pointer; border: none; background: none; }
+
+/* Better tap targets — no delay on touch */
+button, a, input, select { touch-action: manipulation; }
+
+
+/* ================================================================
+   3. ACCESSIBILITY
+================================================================ */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+:focus-visible { outline: 2.5px solid var(--input-focus); outline-offset: 3px; border-radius: 4px; }
+:focus:not(:focus-visible) { outline: none; }
+
+
+/* ================================================================
+   4. ★ KEYFRAME ANIMATIONS
+   All animations declared here so they're available globally.
+================================================================ */
+
+/* ── Page entrance ── */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.94) translateY(20px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+/* ── Continuous / ambient ── */
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-10px); }
+}
+@keyframes floatLarge {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-14px); }
+}
+@keyframes breathe {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.10); }
+}
+@keyframes rotateSlow {
+  to { transform: rotate(360deg); }
+}
+@keyframes gradientShift {
+  0%,100% { background-position: 0% 50%; }
+  50%     { background-position: 100% 50%; }
+}
+
+/* ── Interaction feedback ── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes iconPop {
+  0%   { transform: scale(0.3) rotate(-20deg); opacity: 0; }
+  70%  { transform: scale(1.1) rotate(4deg);   opacity: 1; }
+  100% { transform: scale(1)   rotate(0deg);   opacity: 1; }
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  15%     { transform: translateX(-8px); }
+  30%     { transform: translateX(8px); }
+  45%     { transform: translateX(-6px); }
+  60%     { transform: translateX(6px); }
+  75%     { transform: translateX(-3px); }
+  90%     { transform: translateX(3px); }
+}
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}
+@keyframes dotPulse {
+  0%,100% { transform: scaleX(1); opacity: 0.5; }
+  50%     { transform: scaleX(1.35); opacity: 0.9; }
+}
+@keyframes statusReveal {
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+
+/* ================================================================
+   5. PAGE WRAPPER
+   Mobile: single column (flex-direction: column).
+   Desktop: two columns (overridden in breakpoint section).
+================================================================ */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;   /* ← MOBILE: stack vertically */
+  min-height: 100vh;
+  width: 100%;
+}
+
+
+/* ================================================================
+   6. LEFT PANEL — MOBILE BASE
+   On mobile this is a compact gradient banner at the top.
+   On desktop it becomes a full-height left column.
+================================================================ */
+.left-panel {
+  /* Mobile: gradient top banner */
+  flex: none;
+  background: linear-gradient(148deg, var(--g-from) 0%, var(--g-mid) 55%, var(--g-to) 100%);
+  background-size: 200% 200%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px 24px;
+  position: relative;
+  overflow: hidden;
+  animation: slideDown var(--dur-lg) var(--smooth) both;
+}
+
+/* Animated gradient background */
+.left-panel { animation: slideDown var(--dur-lg) var(--smooth) both,
+                          gradientShift 8s ease-in-out infinite; }
+
+/* ── Decorative circles ── */
+.deco-circle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+.c1 {
+  width: 260px; height: 260px;
+  background: rgba(255,255,255,0.07);
+  top: -80px; left: -60px;
+  animation: breathe 9s ease-in-out infinite;
+}
+.c2 {
+  width: 180px; height: 180px;
+  background: rgba(255,255,255,0.05);
+  bottom: -50px; right: -50px;
+  animation: breathe 11s ease-in-out infinite reverse;
+}
+.c3 {
+  width: 120px; height: 120px;
+  background: rgba(255,255,255,0.055);
+  top: 38%; left: 60%;
+  animation: breathe 7s ease-in-out infinite 1.5s;
+}
+
+
+/* ================================================================
+   7. LEFT PANEL — REGISTER VARIANT
+================================================================ */
+.left-panel--register {
+  background: linear-gradient(155deg, var(--g-from) 0%, #0891b2 48%, var(--g-to) 100%);
+  background-size: 200% 200%;
+}
+
+
+/* ================================================================
+   8. LEFT PANEL CONTENT — MOBILE BASE
+================================================================ */
+.left-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 320px;
+}
+
+/* Illustration — smaller on mobile */
+.illustration {
+  width: 100%;
+  max-width: 130px;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.15));
+  animation: float 5.5s ease-in-out infinite;
+  animation-delay: 0.4s;
+}
+
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-white);
+  letter-spacing: -0.2px;
+  margin-bottom: 6px;
+  animation: fadeSlideUp var(--dur-md) var(--smooth) 0.2s both;
+}
+
+.panel-tagline {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.7;
+  max-width: 240px;
+  animation: fadeSlideUp var(--dur-md) var(--smooth) 0.3s both;
+}
+
+.panel-tagline em {
+  font-style: italic;
+  font-weight: 600;
+  color: rgba(255,255,255,0.95);
+}
+
+.panel-dots {
+  display: flex;
+  gap: 7px;
+  margin-top: 14px;
+  align-items: center;
+  animation: fadeSlideUp var(--dur-md) var(--smooth) 0.4s both;
+}
+
+.dot {
+  display: block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.40);
+  transition: transform var(--dur-md) var(--spring), width var(--dur-md) var(--spring);
+  animation: dotPulse 3s ease-in-out infinite;
+}
+
+.dot:nth-child(2) { animation-delay: 0.5s; }
+.dot:nth-child(3) { animation-delay: 1s; }
+
+.dot-wide {
+  width: 22px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.88);
+  animation: none; /* wide dot stays solid */
+}
+
+/* Hover interaction (desktop only — touch override below) */
+.panel-dots:hover .dot       { transform: scaleY(1.5); }
+.panel-dots:hover .dot-wide  { width: 30px; }
+
+
+/* ================================================================
+   9. RIGHT PANEL — MOBILE BASE
+================================================================ */
+.right-panel {
+  flex: 1;
+  background: var(--right-bg);
+  display: flex;
+  align-items: flex-start;       /* top-align on mobile so card isn't buried */
+  justify-content: center;
+  padding: 24px 14px 40px;
+  position: relative;
+  overflow: hidden;
+  animation: slideUp var(--dur-lg) var(--smooth) 0.08s both;
+}
+
+
+/* ================================================================
+   10. DOT GRID — decorative corner ornament
+================================================================ */
+.dot-grid {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 90px; height: 90px;
+  background-image: radial-gradient(circle, #c4d4e8 1.2px, transparent 1.2px);
+  background-size: 13px 13px;
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+  animation: rotateSlow 35s linear infinite;
+  transform-origin: center;
+}
+
+
+/* ================================================================
+   11. AUTH CARD — MOBILE BASE
+================================================================ */
+.auth-card {
+  position: relative;
+  z-index: 1;
+  background: var(--card-bg);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-card);
+  padding: 28px 20px 32px;
+  width: 100%;
+  max-width: 100%;                     /* full-width on mobile */
+  animation: scaleIn var(--dur-lg) var(--smooth) 0.12s both;
+  transition: box-shadow var(--dur-md) var(--ease-io);
+  /* Subtle inner highlight at top */
+  border-top: 1px solid rgba(255,255,255,0.9);
+}
+
+.auth-card:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.auth-card--register { /* same base, max-width overridden at breakpoints */ }
+
+/* Staggered content reveal inside card */
+.card-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-dark);
+  letter-spacing: -0.5px;
+  margin-bottom: 5px;
+  animation: fadeSlideUp var(--dur-md) var(--smooth) 0.18s both;
+}
+
+.card-sub {
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.65;
+  margin-bottom: 22px;
+  animation: fadeSlideUp var(--dur-md) var(--smooth) 0.26s both;
+}
+
+
+/* ================================================================
+   12. FORM FIELDS — MOBILE BASE
+================================================================ */
+.field-group {
+  margin-bottom: 14px;
+  animation: fadeSlideUp var(--dur-md) var(--smooth) both;
+}
+
+/* Stagger each field group */
+.field-group:nth-child(1) { animation-delay: 0.30s; }
+.field-group:nth-child(2) { animation-delay: 0.38s; }
+.field-group:nth-child(3) { animation-delay: 0.46s; }
+.field-group:nth-child(4) { animation-delay: 0.54s; }
+
+.field-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Icon inside input left edge */
+.field-icon {
+  position: absolute;
+  left: 13px;
+  width: 16px; height: 16px;
+  color: var(--text-muted);
+  pointer-events: none;
+  flex-shrink: 0;
+  z-index: 1;
+  transition: color var(--dur-sm) var(--ease-io),
+              transform var(--dur-sm) var(--spring);
+}
+
+/* Icon animates when field focused */
+.field-wrap:focus-within .field-icon {
+  color: var(--input-focus);
+  transform: scale(1.18) translateY(-1px);
+}
+
+.field-input {
+  width: 100%;
+  /* 16px font-size is CRITICAL on iOS — below 16px triggers auto-zoom */
+  font-size: 16px;
+  font-family: var(--font-body);
+  color: var(--text-dark);
+  background: var(--input-bg);
+  border: 1.5px solid var(--input-border);
+  border-radius: var(--r-sm);
+  outline: none;
+  -webkit-appearance: none;
+  /* Generous padding for touch targets (min 48px height) */
+  padding: 14px 14px 14px 42px;
+  min-height: 50px;
+  transition: border-color var(--dur-sm) var(--ease-io),
+              box-shadow var(--dur-sm) var(--ease-io),
+              background var(--dur-sm) var(--ease-io),
+              transform var(--dur-xs) var(--smooth);
+}
+
+.field-input::placeholder {
+  color: var(--text-muted);
+  font-size: 14px;
+  transition: opacity var(--dur-sm);
+}
+
+/* Fade placeholder when user types */
+.field-input:not(:placeholder-shown)::placeholder { opacity: 0.45; }
+
+.field-input:focus {
+  border-color: var(--input-focus);
+  background: #ffffff;
+  box-shadow: var(--focus-ring);
+  transform: translateY(-1px);
+}
+
+/* Error state — JS adds this class */
+.field-input.field-invalid {
+  border-color: #ef4444;
+  background: #fff5f5;
+  animation: shake 0.44s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* Error message below field */
+.field-err {
+  display: block;
+  font-size: 12px;
+  color: #ef4444;
+  font-weight: 500;
+  margin-top: 5px;
+  padding-left: 2px;
+  min-height: 16px;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: opacity var(--dur-sm) var(--smooth),
+              transform var(--dur-sm) var(--smooth);
+}
+
+/* JS adds .show to reveal the error */
+.field-err.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ================================================================
+   13. SELECT DROPDOWN — gender field
+================================================================ */
+.field-wrap--select { position: relative; }
+
+.field-select {
+  padding-right: 40px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.field-select:invalid,
+.field-select option[value=""] { color: var(--text-muted); }
+.field-select option            { color: var(--text-dark); }
+
+/* Custom chevron arrow */
+.select-arrow {
+  position: absolute;
+  right: 12px;
+  width: 18px; height: 18px;
+  color: var(--text-muted);
+  pointer-events: none;
+  z-index: 1;
+  transition: transform var(--dur-sm) var(--spring),
+              color var(--dur-sm) var(--ease-io);
+}
+
+/* Rotate chevron when focused */
+.field-wrap--select:focus-within .select-arrow {
+  transform: rotate(180deg);
+  color: var(--input-focus);
+}
+
+
+/* ================================================================
+   14. EYE TOGGLE BUTTON — show / hide password
+================================================================ */
+.eye-btn {
+  position: absolute;
+  right: 8px;
+  /* 44×44 is Apple's minimum recommended touch target */
+  width: 44px; height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-xs);
+  color: var(--text-muted);
+  transition: color var(--dur-sm), background var(--dur-sm),
+              transform var(--dur-xs) var(--spring);
+}
+
+.eye-btn:hover  { color: var(--text-mid); background: rgba(13,27,46,0.06); }
+.eye-btn:active { transform: scale(0.88); transition-duration: 80ms; }
+.eye-btn svg    { width: 17px; height: 17px; pointer-events: none; }
+
+
+/* ================================================================
+   15. PRIMARY BUTTON — SIGN IN / REGISTER
+================================================================ */
+.btn-primary {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  /* Tall button = easy tap target on mobile */
+  min-height: 52px;
+  padding: 15px;
+  margin-top: 6px;
+  /* Animated gradient background */
+  background: linear-gradient(135deg, #2563eb 0%, var(--accent) 100%);
+  background-size: 200% 200%;
+  color: var(--text-white);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  border: none;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-btn);
+  transition: transform var(--dur-md) var(--spring),
+              box-shadow var(--dur-md) var(--ease-io),
+              filter var(--dur-md),
+              background-position var(--dur-xl) var(--ease-io);
+  animation: fadeSlideUp var(--dur-md) var(--smooth) 0.56s both;
+}
+
+/* Shimmer sweep — only plays on hover (desktop) */
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent      0%,
+    rgba(255,255,255,0.20) 50%,
+    transparent      100%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s var(--smooth);
+}
+.btn-primary:hover::before { transform: translateX(100%); }
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-btn-hover);
+  filter: brightness(1.07);
+  background-position: right center;
+}
+
+.btn-primary:active {
+  transform: scale(0.96);
+  box-shadow: 0 3px 12px rgba(37,99,235,0.22);
+  transition-duration: 80ms;
+}
+
+.btn-primary:disabled {
+  opacity: 0.60;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none;
+}
+
+/* Spinner shown while loading */
+.btn-spin {
+  width: 0;
+  height: 19px;
+  border: 2.5px solid transparent;
+  border-top-color: rgba(255,255,255,0.88);
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: width var(--dur-sm) var(--smooth);
+}
+
+.btn-primary.loading .btn-spin {
+  width: 19px;
+  animation: spin 0.65s linear infinite;
+}
+
+
+/* ================================================================
+   16. SWITCH AUTH — "New user? Register Now" row
+================================================================ */
+.switch-auth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Stack vertically on small mobile so it's never cramped */
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 20px;
+  animation: fadeSlideUp var(--dur-md) var(--smooth) 0.64s both;
+}
+
+.switch-text  { font-size: 13.5px; color: var(--text-mid); }
+
+.switch-link {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--input-focus);
+  position: relative;
+  padding: 2px 0;
+  transition: color var(--dur-sm);
+}
+
+/* Underline slide animation */
+.switch-link::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -2px;
+  width: 0; height: 2px;
+  background: linear-gradient(90deg, var(--input-focus), var(--accent));
+  border-radius: 2px;
+  transition: width var(--dur-md) var(--smooth);
+}
+
+.switch-link:hover::after { width: 100%; }
+.switch-link:hover        { color: var(--accent-dk); }
+
+
+/* ================================================================
+   17. STATUS BOX — success / error strip
+================================================================ */
+.status-box {
+  margin-top: 14px;
+  border-radius: var(--r-xs);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  /* Collapsed by default */
+  max-height: 0;
+  padding: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.4s var(--smooth),
+              padding 0.28s var(--ease-io),
+              opacity 0.3s var(--smooth);
+}
+
+.status-box.status-ok {
+  max-height: 80px;
+  padding: 13px 14px;
+  opacity: 1;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1.5px solid #a7f3d0;
+  animation: statusReveal var(--dur-md) var(--spring) both;
+}
+
+.status-box.status-err {
+  max-height: 80px;
+  padding: 13px 14px;
+  opacity: 1;
+  background: #fff1f2;
+  color: #9f1239;
+  border: 1.5px solid #fecdd3;
+  animation: statusReveal var(--dur-md) var(--spring) both;
+}
+
+
+/* ================================================================
+   18. SUCCESS MODAL — popup on successful login
+================================================================ */
+/* Full-screen overlay with blur */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(13,27,46,0.58);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  /* Hidden by default */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-lg) var(--ease-io);
+}
+
+.modal-overlay.modal-open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Modal card */
+.modal-box {
+  background: var(--card-bg);
+  border-radius: var(--r-xl);
+  padding: 36px 22px 30px;      /* mobile-friendly padding */
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 32px 80px rgba(13,27,46,0.28), 0 0 0 1px rgba(255,255,255,0.5) inset;
+  /* Entrance: scale up + rise */
+  transform: scale(0.82) translateY(30px);
+  transition: transform var(--dur-xl) var(--spring);
+}
+
+.modal-overlay.modal-open .modal-box {
+  transform: scale(1) translateY(0);
+}
+
+/* Checkmark icon */
+.modal-icon {
+  width: 64px; height: 64px;
+  margin: 0 auto 18px;
+}
+
+.modal-icon svg {
+  width: 100%; height: 100%;
+  animation: iconPop var(--dur-xl) var(--spring) 0.12s both;
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-dark);
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
+  animation: fadeSlideUp var(--dur-md) var(--smooth) 0.25s both;
+}
+
+.modal-msg {
+  font-size: 13.5px;
+  color: var(--text-mid);
+  line-height: 1.65;
+  margin-bottom: 24px;
+  animation: fadeSlideUp var(--dur-md) var(--smooth) 0.35s both;
+}
+
+.modal-ok {
+  max-width: 100%;      /* full-width on mobile */
+  margin: 0 auto;
+  animation: fadeSlideUp var(--dur-md) var(--smooth) 0.42s both;
+}
+
+
+/* ================================================================
+   19. ── BREAKPOINT: TABLET (≥ 600px)
+   Card gets max-width, switch-auth goes inline, fields tighten.
+================================================================ */
+@media (min-width: 600px) {
+
+  /* Left panel gets a bit more padding */
+  .left-panel { padding: 36px 40px 30px; }
+
+  .illustration { max-width: 180px; margin-bottom: 16px; }
+  .panel-title  { font-size: 20px; }
+  .panel-tagline{ font-size: 13.5px; max-width: 280px; }
+  .panel-dots   { margin-top: 18px; }
+  .dot          { width: 8px; height: 8px; }
+  .dot-wide     { width: 24px; }
+
+  /* Right panel — centre vertically */
+  .right-panel {
+    align-items: center;
+    padding: 36px 28px 48px;
+  }
+
+  /* Card — give it a max-width so it doesn't stretch full screen */
+  .auth-card,
+  .auth-card--register {
+    max-width: 480px;
+    padding: 36px 36px 40px;
+    border-radius: var(--r-xl);
+  }
+
+  .card-title { font-size: 25px; }
+  .card-sub   { font-size: 13.5px; margin-bottom: 26px; }
+
+  /* Fields — slightly smaller (no zoom risk above 600px) */
+  .field-input {
+    font-size: 14px;
+    min-height: 48px;
+    padding: 13px 14px 13px 42px;
+  }
+
+  .btn-primary { min-height: 50px; font-size: 13.5px; }
+
+  /* Switch-auth row goes inline */
+  .switch-auth { flex-direction: row; gap: 8px; margin-top: 22px; }
+
+  .modal-box    { padding: 40px 36px 34px; }
+  .modal-title  { font-size: 22px; }
+  .modal-icon   { width: 70px; height: 70px; margin-bottom: 20px; }
+  .modal-ok     { max-width: 200px; }
+}
+
+
+/* ================================================================
+   20. ── BREAKPOINT: DESKTOP (≥ 960px)
+   Switch to two-column layout. Left panel becomes full-height.
+================================================================ */
+@media (min-width: 960px) {
+
+  /* Two-column layout */
+  .page-wrapper { flex-direction: row; }
+
+  /* ── Left panel — full-height column ── */
+  .left-panel {
+    flex: 1.05;
+    min-height: 100vh;
+    padding: 56px 44px;
+    /* Switch entrance animation: slide in from left */
+    animation: slideRight var(--dur-lg) var(--smooth) both,
+               gradientShift 8s ease-in-out infinite;
+  }
+
+  /* Bigger decorative circles on desktop */
+  .c1 { width: 380px; height: 380px; top: -110px; left: -90px; }
+  .c2 { width: 260px; height: 260px; bottom: -70px; right: -70px; }
+  .c3 { width: 170px; height: 170px; display: block; top: 42%; left: 62%; }
+
+  .left-inner    { max-width: 360px; }
+  .illustration  {
+    max-width: 290px;
+    margin-bottom: 28px;
+    animation: floatLarge 5.5s ease-in-out infinite;
+  }
+  .panel-title   { font-size: clamp(20px, 2.4vw, 26px); margin-bottom: 12px; }
+  .panel-tagline { font-size: 13.5px; max-width: 250px; line-height: 1.78; }
+  .panel-dots    { margin-top: 32px; }
+  .dot           { width: 9px; height: 9px; }
+  .dot-wide      { width: 26px; }
+
+  /* ── Right panel — flex column full height ── */
+  .right-panel {
+    flex: 1;
+    align-items: center;
+    padding: 56px 36px;
+    animation: slideLeft var(--dur-lg) var(--smooth) both;
+  }
+
+  /* Dot grid visible on desktop */
+  .dot-grid {
+    width: 120px; height: 120px;
+    top: 22px; right: 22px;
+    opacity: 0.65;
+  }
+
+  /* ── Auth card — max-width on desktop ── */
+  .auth-card {
+    max-width: 430px;
+    padding: 48px 44px;
+    border-radius: var(--r-2xl);
+  }
+
+  .auth-card--register { max-width: 440px; }
+
+  .card-title { font-size: clamp(22px, 2.8vw, 28px); }
+  .card-sub   { font-size: 13.5px; max-width: 320px; margin-bottom: 30px; }
+
+  /* Fields — desktop sizing */
+  .field-group { margin-bottom: 16px; }
+  .field-input { font-size: 14px; min-height: auto; padding: 13px 14px 13px 42px; }
+
+  /* ── Button ── */
+  .btn-primary { min-height: 48px; padding: 14px; font-size: 13.5px; margin-top: 8px; }
+
+  /* ── Modal ── */
+  .modal-box { padding: 48px 44px 40px; max-width: 400px; }
+  .modal-icon { width: 72px; height: 72px; }
+  .modal-title { font-size: clamp(18px, 2.4vw, 22px); }
+  .modal-ok { max-width: 200px; }
+}
+
+
+/* ================================================================
+   21. ── BREAKPOINT: LARGE DESKTOP (≥ 1280px)
+================================================================ */
+@media (min-width: 1280px) {
+  .left-panel  { padding: 64px 60px; }
+  .right-panel { padding: 64px 52px; }
+
+  .illustration { max-width: 320px; }
+
+  .auth-card              { max-width: 460px; padding: 52px 52px; }
+  .auth-card--register    { max-width: 470px; }
+  .card-title             { font-size: 28px; }
+}
+
+
+/* ================================================================
+   22. TOUCH-DEVICE OVERRIDES
+   On touch screens, :hover states linger after a tap.
+   We disable them here so nothing feels stuck.
+================================================================ */
+@media (hover: none) {
+  /* Disable hover transforms */
+  .btn-primary:hover      { transform: none; filter: none; box-shadow: var(--shadow-btn); }
+  .btn-primary::before    { display: none; }        /* no shimmer on touch */
+  .eye-btn:hover          { transform: none; background: none; }
+  .auth-card:hover        { box-shadow: var(--shadow-card); }
+  .panel-dots:hover .dot  { transform: none; }
+  .panel-dots:hover .dot-wide { width: 22px; }
+  .switch-link:hover::after   { width: 0; }
+  .switch-link:hover          { color: var(--input-focus); }
+
+  /* Keep :active feedback — this IS triggered on tap */
+  .btn-primary:active { transform: scale(0.96); transition-duration: 80ms; }
+  .eye-btn:active     { transform: scale(0.88); }
+}
+
+
+/* ================================================================
+   23. REDUCED-MOTION OVERRIDE
+   Respect the user's system accessibility preference.
+   Collapses all animation durations to near-zero.
+================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration:        0.01ms !important;
+    animation-iteration-count: 1      !important;
+    transition-duration:       0.01ms !important;
+    scroll-behavior:           auto   !important;
+  }
+}
