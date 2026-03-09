@@ -503,7 +503,7 @@ function setupEyeToggle(inputId, eyeBtnId, eyeIconId) {
         // Redirect to login.html after 2 seconds
         // MODIFY: Change the delay (2000ms) or destination URL
         setTimeout(() => {
-          window.location.href = 'login.html';
+          window.location.href = 'index.html';
         }, 2000);
       })
 
@@ -521,7 +521,7 @@ function setupEyeToggle(inputId, eyeBtnId, eyeIconId) {
           console.error('EmailJS SEND ERROR:', error);
           // Registration still worked in Firebase, so redirect anyway
           showStatus(registerStatus, '⚠️ Account created but email notification failed. Redirecting...', 'ok');
-          setTimeout(() => { window.location.href = 'login.html'; }, 2500);
+          setTimeout(() => { window.location.href = 'index.html'; }, 2500);
         }
       });
 
